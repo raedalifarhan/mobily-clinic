@@ -2,13 +2,17 @@ package com.ri.mc.security;
 
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
+import com.ri.mc.filter.CustomAuthenticationFilter;
 
 import lombok.RequiredArgsConstructor;
 
@@ -44,7 +48,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         // Add authentication filter
         // to check the user whenever they're trying to login.
-        //http.addFilter(null);
+        http.addFilter(new CustomAuthenticationFilter(authenticationManagerBean()));
+    }
+
+
+
+    @Bean
+    @Override
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
     }
     
 }
